@@ -1,0 +1,26 @@
+{
+  "name": "bb-match-report",
+  "version": "1.0.0",
+  "description": "Generates match report images from BBDB",
+  "main": "bb-images.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/0x6e/bb-match-report.git"
+  },
+  "keywords": [
+    "bloodbowl",
+    "bbdb"
+  ],
+  "author": "0x6e",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/0x6e/bb-match-report/issues"
+  },
+  "homepage": "https://github.com/0x6e/bb-match-report#readme",
+  "dependencies": {
+    "d3": "^3.5.16"
+  }
+}
