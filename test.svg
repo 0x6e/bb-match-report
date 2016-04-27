@@ -12,7 +12,7 @@
  </metadata>
  <g id="layer1" font-family="Sans" transform="translate(0,-852.36218)" font-weight="normal" font-style="normal" fill="#000000">
   <text id="homeTeam" style="letter-spacing:0px;word-spacing:0px;" xml:space="preserve" font-size="18px" y="882.1073" x="18.233398" line-height="125%"><tspan id="tspan2987" font-size="18px" y="882.1073" x="18.233398">Home Team</tspan></text>
-  <text id="awayTeam" style="letter-spacing:0px;word-spacing:0px;" xml:space="preserve" font-size="40px" y="878.61804" x="282.14282" line-height="125%"><tspan id="tspan2991" font-size="18px" y="878.61804" x="282.14282">Away Team</tspan></text>
+  <text id="awayTeam" style="letter-spacing:0px;word-spacing:0px;" xml:space="preserve" font-size="18px" y="878.61804" x="282.14282" line-height="125%"><tspan id="tspan2991" font-size="18px" y="878.61804" x="282.14282">Away Team</tspan></text>
   <text id="homeScore" style="letter-spacing:0px;word-spacing:0px;" xml:space="preserve" font-size="22px" y="919.75897" x="156.52344" line-height="125%"><tspan id="tspan2995" font-size="40px" y="919.75897" x="156.52344">0</tspan></text>
   <text id="awayScore" style="letter-spacing:0px;word-spacing:0px;" xml:space="preserve" font-size="22px" y="919.75897" x="218.04688" line-height="125%"><tspan id="tspan3037" font-size="40px" y="919.75897" x="218.04688">0</tspan></text>
   <text id="vs" style="letter-spacing:0px;word-spacing:0px;" xml:space="preserve" font-size="40px" y="889.50507" x="178.125" line-height="125%"><tspan id="tspan3035" x="178.125" y="889.50507">vs</tspan></text>
