@@ -21,7 +21,6 @@
   },
   "homepage": "https://github.com/0x6e/bb-match-report#readme",
   "dependencies": {
-    "d3": "^3.5.16",
     "xmldom": "^0.1.22"
   }
 }

@@ -1,5 +1,5 @@
 const fs = require('fs');
-const xmldom = require('xmldom')
+const xmldom = require('xmldom');
 
 var parser = new xmldom.DOMParser();
 var serializer = new xmldom.XMLSerializer();
