@@ -2,8 +2,9 @@
   "name": "bb-match-report",
   "version": "1.0.0",
   "description": "Generates match report images from BBDB",
-  "main": "bb-images.js",
+  "main": "main.js",
   "scripts": {
+    "start": "node main.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -21,6 +22,7 @@
   },
   "homepage": "https://github.com/0x6e/bb-match-report#readme",
   "dependencies": {
+    "pg": "^4.5.5",
     "xmldom": "^0.1.22"
   }
 }

@@ -1,6 +1,10 @@
 api-details.json
 
-#### Node.gitignore
+# Local development
+*.env
+.DS_Store
+
+# Node.gitignore
 # Logs
 logs
 *.log
