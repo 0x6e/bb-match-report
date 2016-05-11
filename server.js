@@ -1,8 +1,14 @@
+var bodyParser  = require('body-parser');
 var express = require("express");
 var matchReportApi = require("./matchReportApi.js");
 
 var app = express();
-// TODO Set up the Angular web app in the /public subdirectory
+
+// Use body-parser middleware to populate request.body
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+// Route all other requests to the web app
 app.use(express.static(__dirname + "/public"));
 
 // TODO Create a database connection and connect to it before starting the app.
@@ -29,6 +35,17 @@ var apiRoutes = express.Router();
 /*  "/report"
  *      POST: create a new report
  */
+apiRoutes.post('/report', function(request, result)
+{
+    matchReportApi.createReport(request.body).then( (theId) =>
+    {
+        result.status(201).json({ id: theId, report: request.body });
+    })
+    .catch( (error) =>
+    {
+        result.status(400).json({ status: 400, message: error });
+    });
+});
 
 
 /*  "/report/:id"
