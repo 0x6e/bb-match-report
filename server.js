@@ -41,9 +41,9 @@ apiRoutes.post('/report', function(request, result)
     {
         result.status(201).json({ id: theId, report: request.body });
     })
-    .catch( (error) =>
+    .catch( (theError) =>
     {
-        result.status(400).json({ status: 400, message: error });
+        result.status(400).json({ status: 400, message: theError });
     });
 });
 
