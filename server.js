@@ -2,9 +2,14 @@ var express = require("express");
 
 var app = express();
 // TODO Set up the Angular web app in the /public subdirectory
-// app.use(express.static(__dirname + "/public"));
+app.use(express.static(__dirname + "/public"));
 
 // TODO Create a database connection and connect to it before starting the app.
+var port = process.env.PORT || 8080;
+var server = app.listen(port, function ()
+{
+    console.log("App now running on port", port);
+});
 
 
 // Match report API routes below
