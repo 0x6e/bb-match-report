@@ -3,12 +3,12 @@ CREATE TABLE IF NOT EXISTS match_reports (
     created timestamp DEFAULT now(),
     home_team text NOT NULL,
     home_coach text NOT NULL,
-    home_race text NOT NULL,
+    -- home_race text NOT NULL,
     home_colour text NOT NULL,
     home_score integer NOT NULL,
     away_team text NOT NULL,
     away_coach text NOT NULL,
-    away_race text NOT NULL,
+    -- away_race text NOT NULL,
     away_colour text NOT NULL,
     away_score integer NOT NULL
 );
