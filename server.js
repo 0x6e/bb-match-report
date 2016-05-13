@@ -1,8 +1,11 @@
+require('dotenv').config();
+
 var bodyParser  = require('body-parser');
 var express = require("express");
 var matchReportApi = require("./matchReportApi.js");
 
 var app = express();
+var api = matchReportApi(process.env.DATABASE_URL);
 
 // Use body-parser middleware to populate request.body
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -11,11 +14,11 @@ app.use(bodyParser.json());
 // Route all other requests to the web app
 app.use(express.static(__dirname + "/public"));
 
-// TODO Create a database connection and connect to it before starting the app.
-matchReportApi.connect().then( () =>
+// Connect to the API to check our database connection. Start the app if successful
+api.connect().then( () =>
 {
     var port = process.env.PORT || 8080;
-    var server = app.listen(port, function ()
+    var server = app.listen(port, () =>
     {
         console.log("App now running on port", port);
     });
@@ -37,7 +40,7 @@ var apiRoutes = express.Router();
  */
 apiRoutes.post('/report', function(request, result)
 {
-    matchReportApi.createReport(request.body).then( (theId) =>
+    api.createReport(request.body).then( (theId) =>
     {
         result.status(201).json({ id: theId, report: request.body });
     })

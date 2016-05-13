@@ -1,17 +1,39 @@
+const pg = require('pg');
 const util = require('util');
 
-function MatchReportApi()
-{
 
+function createMatchReportApi(databaseUrl)
+{
+    return new MatchReportApi(databaseUrl);
+}
+
+
+function MatchReportApi(databaseUrl)
+{
+    this.dbUrl = databaseUrl;
 }
 
 
 MatchReportApi.prototype.connect = function()
 {
+    var self = this;
     return new Promise( function(resolve, reject)
     {
-        console.log("Connecting...");
-        resolve();
+        pg.connect(self.dbUrl, function(error, client, done)
+        {
+            done();
+
+            if (error)
+            {
+                console.log("Failed to connect to the database!")
+                reject(error);
+            }
+            else
+            {
+                console.log("Connected to the database.")
+                resolve();
+            }
+        });
     });
 };
 
@@ -74,4 +96,4 @@ MatchReportApi.prototype.createReport = function(report)
     });
 }
 
-module.exports = new MatchReportApi();
+module.exports = createMatchReportApi;
