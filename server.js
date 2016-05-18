@@ -1,8 +1,8 @@
 require('dotenv').config();
 
 var bodyParser  = require('body-parser');
-var express = require("express");
-var matchReportApi = require("./matchReportApi.js");
+var express = require('express');
+var matchReportApi = require('./matchReportApi.js');
 
 var app = express();
 var api = matchReportApi(process.env.DATABASE_URL);
@@ -61,9 +61,20 @@ apiRoutes.post('/report', function(request, result)
  */
 
 
-/*  "/image"
+/*  "/image/:reportId/:templateId"
  *      POST: create an image for the given report and template id
  */
+apiRoutes.post('/image/:reportId/:templateId', function(request, result)
+{
+    api.createImage(request.params.reportId, request.params.templateId).then( (imageId) =>
+    {
+        result.status(201).json({ id: imageId });
+    })
+    .catch( (theError) =>
+    {
+        result.status(theError.status).json(theError);
+    })
+});
 
 
 /*  "/image/:id/report.svg"
