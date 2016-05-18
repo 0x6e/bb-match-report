@@ -21,6 +21,16 @@ function MatchReportApiError(status, message)
 }
 
 
+function isInt(value)
+{
+    if (isNaN(value))
+        return false;
+
+    var x = parseFloat(value);
+    return (x | 0) === x;
+}
+
+
 MatchReportApi.prototype.connect = function()
 {
     var self = this;
@@ -122,10 +132,53 @@ MatchReportApi.prototype.createReport = function(report)
                 {
                     console.log(error);
                     reject(new MatchReportApiError(500, "Query failed"));
+                    return;
+                }
+
+                resolve(result.rows[0].id);
+            });
+        });
+    });
+}
+
+
+MatchReportApi.prototype.getImage = function(imageId)
+{
+    var self = this;
+    return new Promise( function(resolve, reject)
+    {
+        if (!isInt(imageId))
+        {
+            reject(new MatchReportApiError(400, "Invalid imageId"));
+            return;
+        }
+
+        pg.connect(self.dbUrl, function(error, client, done)
+        {
+            if (error)
+            {
+                done();
+                reject(new MatchReportApiError(500, "Failed to connect to the database!"));
+                return;
+            };
+
+            client.query('SELECT svg FROM images WHERE id=$1;', [imageId], function(error, result)
+            {
+                done();
+                if (error)
+                {
+                    console.log(error);
+                    reject(new MatchReportApiError(500, "Query failed"));
+                    return;
+                }
+
+                if (result.rows.length == 0)
+                {
+                    reject(new MatchReportApiError(404, util.format("No image found with id: %d", imageId)));
                 }
                 else
                 {
-                    resolve(result.rows[0].id);
+                    resolve(result.rows[0].svg);
                 }
             });
         });

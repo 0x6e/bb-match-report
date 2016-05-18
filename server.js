@@ -63,10 +63,25 @@ apiRoutes.post('/report', function(request, result)
 
 /*  "/image"
  *      POST: create an image for the given report and template id
+ */
 
 
 /*  "/image/:id/report.svg"
  *      GET: find image by id
  */
+apiRoutes.get('/image/:id/report.svg', function(request, result)
+{
+    api.getImage(request.params.id).then( (theImage) =>
+    {
+        result.set('Content-Type', 'image/svg+xml');
+        result.status(200).send(theImage);
+    })
+    .catch( (theError) =>
+    {
+        result.status(theError.status).json(theError);
+    })
+});
+
+
 
 app.use('/api', apiRoutes);
