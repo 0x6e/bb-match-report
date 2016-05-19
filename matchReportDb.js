@@ -1,5 +1,6 @@
 const MatchReportApiError = require('./matchReportApiError.js');
 const pg = require('pg');
+const util = require('util');
 
 
 module.exports.connect = function(dbUrl)
@@ -36,6 +37,7 @@ module.exports.insertReport = function (connection, report)
             if (error)
             {
                 console.log(error);
+                connection.done();
                 reject(new MatchReportApiError(500, "Query failed"));
                 return;
             }
@@ -45,3 +47,31 @@ module.exports.insertReport = function (connection, report)
         });
     });
 };
+
+
+module.exports.selectImage = function(connection, imageId)
+{
+    return new Promise( function (resolve, reject)
+    {
+        connection.client.query('SELECT svg FROM images WHERE id=$1;', [imageId], function(error, result)
+        {
+            if (error)
+            {
+                console.log(error);
+                connection.done();
+                reject(new MatchReportApiError(500, "Query failed"));
+                return;
+            }
+
+            if (result.rows.length == 0)
+            {
+                reject(new MatchReportApiError(404, util.format("No image found with id: %d", imageId)));
+            }
+            else
+            {
+                connection.svg = result.rows[0].svg;
+                resolve(connection);
+            }
+        });
+    });
+}

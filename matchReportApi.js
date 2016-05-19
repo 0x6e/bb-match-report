@@ -129,35 +129,14 @@ MatchReportApi.prototype.getImage = function(imageId)
             return;
         }
 
-        pg.connect(self.dbUrl, function(error, client, done)
+        MatchReportDb.connect(self.dbUrl)
+        .then( (connection) => MatchReportDb.selectImage(connection, imageId))
+        .then( (connection) =>
         {
-            if (error)
-            {
-                done();
-                reject(new MatchReportApiError(500, "Failed to connect to the database!"));
-                return;
-            };
-
-            client.query('SELECT svg FROM images WHERE id=$1;', [imageId], function(error, result)
-            {
-                done();
-                if (error)
-                {
-                    console.log(error);
-                    reject(new MatchReportApiError(500, "Query failed"));
-                    return;
-                }
-
-                if (result.rows.length == 0)
-                {
-                    reject(new MatchReportApiError(404, util.format("No image found with id: %d", imageId)));
-                }
-                else
-                {
-                    resolve(result.rows[0].svg);
-                }
-            });
-        });
+            connection.done();
+            resolve(connection.svg);
+        })
+        .catch( (theError) => reject( MatchReportApiError.handle(theError)) );
     });
 }
 
