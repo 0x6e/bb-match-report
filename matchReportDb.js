@@ -24,6 +24,79 @@ module.exports.connect = function(dbUrl)
 }
 
 
+module.exports.setup = function(connection)
+{
+    return new Promise( function(resolve, reject)
+    {
+        function querySucceeded(theError)
+	{
+	    if (theError)
+	    {
+	        console.log(error);
+		connection.done();
+		reject(new MatchReportApiError(500, "Failed to setup database"));
+		return false;
+            }
+
+	    return true;
+	}
+
+        // Create match_reports
+        connection.client.query(
+        "CREATE TABLE IF NOT EXISTS match_reports ("
+        + "id serial PRIMARY KEY, "
+        + "created timestamp DEFAULT now(), "
+        + "home_team text NOT NULL, "
+        + "home_coach text NOT NULL, "
+        // + "home_race text NOT NULL, "
+        + "home_colour text NOT NULL, "
+        + "home_score integer NOT NULL, "
+        + "away_team text NOT NULL, "
+        + "away_coach text NOT NULL, "
+        // + "away_race text NOT NULL, "
+        + "away_colour text NOT NULL, "
+        + "away_score integer NOT NULL "
+        + ");"
+        , function(error, result)
+	{
+	    if (!querySucceeded(error))
+	        return;
+
+            // Create templates
+	    connection.client.query(
+            "CREATE TABLE IF NOT EXISTS templates ( "
+            + "id serial PRIMARY KEY, "
+            + "created timestamp DEFAULT now(), "
+            + "name text NOT NULL, "
+            + "svg xml NOT NULL "
+            + ");"
+	    , function(error, result)
+	    {
+	        if (!querySucceeded(error))
+		    return;
+
+                // Create images
+		connection.client.query(
+		"CREATE TABLE IF NOT EXISTS templates ( "
+                + "id serial PRIMARY KEY, "
+                + "created timestamp DEFAULT now(), "
+                + "name text NOT NULL, "
+                + "svg xml NOT NULL "
+                + ");"
+		, function(error, result)
+		{
+		    if(!querySucceeded(error))
+		        return;
+		    
+		    connection.databaseConfigured = true;
+		    resolve(connection);
+		});
+            });
+	});
+    });
+}
+
+
 module.exports.insertReport = function (connection, report)
 {
     return new Promise( function (resolve, reject)

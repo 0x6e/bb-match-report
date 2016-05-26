@@ -32,21 +32,19 @@ MatchReportApi.prototype.connect = function()
     var self = this;
     return new Promise( function(resolve, reject)
     {
-        pg.connect(self.dbUrl, function(error, client, done)
-        {
-            done();
-
-            if (error)
-            {
-                console.log("Failed to connect to the database!")
-                reject(error);
-            }
-            else
-            {
-                console.log("Connected to the database.")
-                resolve();
-            }
-        });
+        MatchReportDb.connect(self.dbUrl)
+	.then( MatchReportDb.setup )
+	.then( (connection) =>
+	{
+	    connection.done();
+            console.log("Connected to the database.")
+            resolve();
+	})
+	.catch( (theError) =>
+	{
+            console.log("Failed to connect to the database!")
+	    reject( MatchReportApiError.handle(theError));
+	});
     });
 };
 
