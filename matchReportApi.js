@@ -158,7 +158,7 @@ MatchReportApi.prototype.createImage = function(reportId, templateId)
 
         MatchReportDb.connect(self.dbUrl)
         .then( (connection) => MatchReportDb.selectReport(connection, reportId))
-        .then( (connection) => MatchReportDb.selectTempate(connection, templateId))
+        .then( (connection) => MatchReportDb.selectTemplate(connection, templateId))
         .then( (connection) => MatchReportDb.insertImage(connection, reportId, templateId, imageBuilder.build(connection.template, connection.report)) )
         .then( (connection) =>
         {
@@ -170,4 +170,3 @@ MatchReportApi.prototype.createImage = function(reportId, templateId)
 };
 
 module.exports = createMatchReportApi;
-

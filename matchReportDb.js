@@ -86,7 +86,7 @@ module.exports.setup = function(connection)
 		{
 		    if(!querySucceeded(error))
 		        return;
-		    
+
 		    connection.databaseConfigured = true;
 		    resolve(connection);
 		});
@@ -240,7 +240,7 @@ module.exports.insertImage = function(connection, reportId, templateId, image)
 {
     return new Promise( function (resolve, reject)
     {
-        connnection.client.query('INSERT INTO images (report_id, template_id, svg) VALUES ($1, $2, XMLPARSE( DOCUMENT $3)) RETURNING id;'
+        connection.client.query('INSERT INTO images (report_id, template_id, svg) VALUES ($1, $2, XMLPARSE( DOCUMENT $3)) RETURNING id;'
             , [reportId, templateId, image]
             , function(error, result)
         {
@@ -257,4 +257,3 @@ module.exports.insertImage = function(connection, reportId, templateId, image)
         });
     });
 }
-
