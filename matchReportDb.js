@@ -12,7 +12,6 @@ module.exports.connect = function(dbUrl)
             if (error)
             {
                 // console.log(error);
-                done();
                 reject(new MatchReportApiError(500, "Failed to connect to the database!"));
             }
             else
@@ -77,13 +76,13 @@ module.exports.setup = function(connection)
 
                 // Create images
 		connection.client.query(
-		"CREATE TABLE IF NOT EXISTS templates ( "
+		"CREATE TABLE IF NOT EXISTS images ( "
                 + "id serial PRIMARY KEY, "
-                + "created timestamp DEFAULT now(), "
-                + "name text NOT NULL, "
+                + "report_id integer NOT NULL REFERENCES match_reports(id) ON UPDATE CASCADE ON DELETE CASCADE, "
+                + "template_id integer NOT NULL REFERENCES templates(id) ON UPDATE CASCADE ON DELETE RESTRICT, "
                 + "svg xml NOT NULL "
                 + ");"
-		, function(error, result)
+                , function(error, result)
 		{
 		    if(!querySucceeded(error))
 		        return;
@@ -93,6 +92,42 @@ module.exports.setup = function(connection)
 		});
             });
 	});
+    });
+}
+
+
+module.exports.selectReport = function (connection, reportId)
+{
+    return new Promise( function (resolve, reject)
+    {
+        connection.client.query('SELECT * FROM match_reports WHERE id=$1;'
+            , [reportId]
+            , function (error, result)
+        {
+            if (error)
+            {
+                console.log(error);
+                connection.done();
+                reject(new MatchReportApiError(500, "Query failed"));
+                return;
+            }
+
+            if (result.rows.length == 0)
+            {
+                connection.done();
+                reject(new MatchReportApiError(404, util.format("Report id '%d' does not exist.", reportId)));
+                return;
+            }
+
+            var report = {};
+            report.homeTeam = result.rows[0].home_team;
+            report.homeScore = result.rows[0].home_score;
+            report.awayTeam = result.rows[0].away_team;
+            report.awayScore = result.rows[0].away_score;
+
+            connection.report = report;
+            resolve(connection);
+        });
     });
 }
 
@@ -122,6 +157,57 @@ module.exports.insertReport = function (connection, report)
 };
 
 
+module.exports.selectTemplate = function(connection, templateId)
+{
+    return new Promise( function (resolve, reject)
+    {
+        connection.client.query('SELECT svg FROM templates WHERE id=$1;', [templateId], function(error, result)
+        {
+            if (error)
+            {
+                console.log(error);
+                connection.done();
+                reject(new MatchReportApiError(500, "Query failed"));
+                return;
+            }
+
+            if (result.rows.length === 0)
+            {
+                reject(new MatchReportApiError(404, util.format("No template found with id: %d", templateId)));
+            }
+            else
+            {
+                connection.template = result.rows[0].svg;
+                resolve(connection);
+            }
+        });
+    });
+}
+
+
+module.exports.insertTemplate = function(connection, templateName, template)
+{
+    return new Promise( function (resolve, reject)
+    {
+        connection.client.query('INSERT INTO templates (name, svg) VALUES ($1, $2) RETURNING id;'
+            , [templateName, template]
+            , function(error, result)
+        {
+            if (error)
+            {
+                console.log(error);
+                connection.done();
+                reject(new MatchReportApiError(500, "Query failed"));
+                return;
+            }
+
+            connection.tempateId = result.rows[0].id;
+            resolve(connection);
+        });
+    });
+}
+
+
 module.exports.selectImage = function(connection, imageId)
 {
     return new Promise( function (resolve, reject)
@@ -136,7 +222,7 @@ module.exports.selectImage = function(connection, imageId)
                 return;
             }
 
-            if (result.rows.length == 0)
+            if (result.rows.length === 0)
             {
                 reject(new MatchReportApiError(404, util.format("No image found with id: %d", imageId)));
             }
@@ -148,3 +234,27 @@ module.exports.selectImage = function(connection, imageId)
         });
     });
 }
+
+
+module.exports.insertImage = function(connection, reportId, templateId, image)
+{
+    return new Promise( function (resolve, reject)
+    {
+        connnection.client.query('INSERT INTO images (report_id, template_id, svg) VALUES ($1, $2, XMLPARSE( DOCUMENT $3)) RETURNING id;'
+            , [reportId, templateId, image]
+            , function(error, result)
+        {
+            if (error)
+            {
+                console.log(error);
+                connection.done();
+                reject(new MatchReportApiError(500, "Query failed"));
+                return;
+            }
+
+            connection.imageId = result.rows[0].id;
+            resolve(connection);
+        });
+    });
+}
+

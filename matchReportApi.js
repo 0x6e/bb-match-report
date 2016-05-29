@@ -156,58 +156,18 @@ MatchReportApi.prototype.createImage = function(reportId, templateId)
             return;
         }
 
-        pg.connect(self.dbUrl, function(error, client, done)
+        MatchReportDb.connect(self.dbUrl)
+        .then( (connection) => MatchReportDb.selectReport(connection, reportId))
+        .then( (connection) => MatchReportDb.selectTempate(connection, templateId))
+        .then( (connection) => MatchReportDb.insertImage(connection, reportId, templateId, imageBuilder.build(connection.template, connection.report)) )
+        .then( (connection) =>
         {
-            if (error)
-            {
-                done();
-                reject(new MatchReportApiError(500, "Failed to connect to the database!"));
-                return;
-            };
+            resolve(connection.imageId);
+        })
+        .catch( (theError) => reject( MatchReportApiError.handle(theError)) );
 
-            client.query('SELECT templates.svg, match_reports.home_team, match_reports.home_score, match_reports.away_team, match_reports.away_score FROM match_reports, templates WHERE match_reports.id=$1 AND templates.id=$2;'
-                        , [reportId, templateId]
-                        , function(error, result)
-            {
-                if (error)
-                {
-                    console.log(error);
-                    reject(new MatchReportApiError(500, "Query failed"));
-                    return;
-                }
-
-                if (result.rows.length == 0)
-                {
-                    done();
-                    reject(new MatchReportApiError(404, util.format("Could not match reportId(%d) and templateId(%d)", reportId, templateId)));
-                    return;
-                }
-
-                var report = {};
-                report.homeTeam = result.rows[0].home_team;
-                report.homeScore = result.rows[0].home_score;
-                report.awayTeam = result.rows[0].away_team;
-                report.awayScore = result.rows[0].away_score;
-
-                var image = imageBuilder.build(result.rows[0].svg, report);
-
-                client.query('INSERT INTO images (report_id, template_id, svg) VALUES ($1, $2, XMLPARSE( DOCUMENT $3)) RETURNING id;'
-                            , [reportId, templateId, image]
-                            , function(insertError, insertResult)
-                {
-                    done();
-                    if (insertError)
-                    {
-                        console.log(insertError);
-                        reject(new MatchReportApiError(500, "Query failed"));
-                        return;
-                    }
-
-                    resolve(insertResult.rows[0].id);
-                });
-            });
-        });
     });
 };
 
 module.exports = createMatchReportApi;
+
