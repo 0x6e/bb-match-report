@@ -54,6 +54,17 @@ apiRoutes.post('/report', function(request, result)
 /*  "/report/:id"
  *      GET: find a report by id
  */
+apiRoutes.get('/report/:id', function(request, result)
+{
+    api.getReport(request.params.id).then( (theReport) =>
+    {
+        result.status(200).json(theReport);
+    })
+    .catch( (theError) =>
+    {
+        result.status(theError.status).json(theError);
+    })
+});
 
 
 /*  "/template/:id"

@@ -33,20 +33,43 @@ MatchReportApi.prototype.connect = function()
     return new Promise( function(resolve, reject)
     {
         MatchReportDb.connect(self.dbUrl)
-	.then( MatchReportDb.setup )
-	.then( (connection) =>
-	{
-	    connection.done();
+    	.then( MatchReportDb.setup )
+    	.then( (connection) =>
+    	{
+    	    connection.done();
             console.log("Connected to the database.")
             resolve();
-	})
-	.catch( (theError) =>
-	{
+    	})
+    	.catch( (theError) =>
+    	{
             console.log("Failed to connect to the database!")
-	    reject( MatchReportApiError.handle(theError));
-	});
+    	    reject( MatchReportApiError.handle(theError));
+    	});
     });
 };
+
+
+MatchReportApi.prototype.getReport = function(reportId)
+{
+    var self = this;
+    return new Promise( function(resolve, reject)
+    {
+        if (!isInt(reportId))
+        {
+            reject(new MatchReportApiError(400, "Invalid reportId"));
+            return;
+        }
+
+        MatchReportDb.connect(self.dbUrl)
+        .then( (connection) => MatchReportDb.selectReport(connection, reportId))
+        .then( (connection) =>
+        {
+            connection.done();
+            resolve(connection.report);
+        })
+        .catch( (theError) => reject( MatchReportApiError.handle(theError)) );
+    });
+}
 
 
 MatchReportApi.prototype.createReport = function(report)
