@@ -1,0 +1,51 @@
+<div class="row">
+    <div class="col-sm-12">
+        <form ng-submit="submit()" novalidate>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Home</div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label for="homeTeam">Team name</label>
+                                <input type="text" class="form-control" id="homeTeam" ng-model="report.home.team">
+                            </div>
+                            <div class="form-group">
+                                <label for="homeCoach">Coach</label>
+                                <input type="text" class="form-control" id="homeCoach" ng-model="report.home.coach">
+                            </div>
+                            <div class="form-group">
+                                <label for="homeScore">Score</label>
+                                <input type="number" class="form-control" id="homeScore" ng-model="report.home.score">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                    <div class="col-sm-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Away</div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label for="awayTeam">Team name</label>
+                                <input type="text" class="form-control" id="awayTeam" ng-model="report.away.team">
+                            </div>
+                            <div class="form-group">
+                                <label for="awayCoach">Coach</label>
+                                <input type="text" class="form-control" id="awayCoach" ng-model="report.away.coach">
+                            </div>
+                            <div class="form-group">
+                                <label for="awayScore">Score</label>
+                                <input type="number" class="form-control" id="awayScore" ng-model="report.away.score">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <button type="submit" class="btn btn-default pull-right">Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

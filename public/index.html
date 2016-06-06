@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="app">
+<html lang="en" ng-app="app">
 
 <head>
     <title>BB Match Report</title>
@@ -15,6 +15,7 @@
 
     <!-- Angular lib -->
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.10/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.10/angular-resource.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.10/angular-route.min.js"></script>
 
     <!-- Bootstrap - latest compiled and minified CSS -->
@@ -24,12 +25,15 @@
 
     <!-- bb-match-report app -->
     <script src="js/app.js"></script>
+    <script src="js/matchReportApi.js"></script>
     <script src="js/matchReportControllers.js"></script>
 </head>
 
 <body>
-    <h1>BB Match Report</h1>
-    <div ng-view></div>
+    <div class="container">
+        <h1>BB Match Report</h1>
+        <div ng-view></div>
+    </div>
 </body>
 
 </html>
