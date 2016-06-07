@@ -139,6 +139,29 @@ MatchReportApi.prototype.createReport = function(report)
 }
 
 
+MatchReportApi.prototype.getTemplate = function(templateId)
+{
+    var self = this;
+    return new Promise( function(resolve, reject)
+    {
+        if (!isInt(templateId))
+        {
+            reject(new MatchReportApiError(400, "Invalid templateId"));
+            return;
+        }
+
+        MatchReportDb.connect(self.dbUrl)
+        .then( (connection) => MatchReportDb.selectTemplate(connection, templateId) )
+        .then( (connection) =>
+        {
+            connection.done();
+            resolve(connection.template);
+        })
+        .catch( (theError) => reject( MatchReportApiError.handle(theError)) );
+    });
+}
+
+
 MatchReportApi.prototype.getTemplates = function()
 {
     var self = this;
@@ -199,7 +222,7 @@ MatchReportApi.prototype.createImage = function(reportId, templateId)
         MatchReportDb.connect(self.dbUrl)
         .then( (connection) => MatchReportDb.selectReport(connection, reportId))
         .then( (connection) => MatchReportDb.selectTemplate(connection, templateId))
-        .then( (connection) => MatchReportDb.insertImage(connection, reportId, templateId, imageBuilder.build(connection.template, connection.report)) )
+        .then( (connection) => MatchReportDb.insertImage(connection, reportId, templateId, imageBuilder.build(connection.template.svg, connection.report)) )
         .then( (connection) =>
         {
             resolve(connection.imageId);

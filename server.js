@@ -72,10 +72,27 @@ apiRoutes.get('/report/:id', function(request, result)
  */
 
 
- /* "/templates"
+ /* "/templates/:id?"
   *     GET: return an array of the available templates
   */
-apiRoutes.get('/templates', function(request, result)
+apiRoutes.get('/templates/:id?', function(request, result, next)
+{
+    if (request.params.id === undefined)
+    {
+        next();
+        return;
+    }
+
+    api.getTemplate(request.params.id).then( (theTemplate) =>
+    {
+        result.status(200).json(theTemplate);
+    })
+    .catch( (theError) =>
+    {
+        result.status(theError.status).json(theError);
+    })
+}
+, function(request, result)
 {
     api.getTemplates().then( (theTemplates) =>
     {

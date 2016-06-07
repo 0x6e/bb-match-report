@@ -215,7 +215,7 @@ module.exports.selectTemplate = function(connection, templateId)
 {
     return new Promise( function (resolve, reject)
     {
-        connection.client.query('SELECT svg FROM templates WHERE id=$1;', [templateId], function(error, result)
+        connection.client.query('SELECT * FROM templates WHERE id=$1;', [templateId], function(error, result)
         {
             if (error)
             {
@@ -231,7 +231,7 @@ module.exports.selectTemplate = function(connection, templateId)
             }
             else
             {
-                connection.template = result.rows[0].svg;
+                connection.template = result.rows[0];
                 resolve(connection);
             }
         });
