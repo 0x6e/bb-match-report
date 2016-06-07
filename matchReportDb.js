@@ -239,6 +239,35 @@ module.exports.selectTemplate = function(connection, templateId)
 }
 
 
+/* selectTemplates(connection)
+ *  connection:
+ *      A connection object created by the #connect function.
+ *
+ *  returns:
+ *      A Promise resolving a connection object which contains a 'templates'
+ *      property storing an array of templates.
+ */
+module.exports.selectTemplates = function(connection)
+{
+    return new Promise( function (resolve, reject)
+    {
+        connection.client.query('SELECT * FROM templates;', function (error, result)
+        {
+            if (error)
+            {
+                console.log(error);
+                connection.done();
+                reject(new MatchReportApiError(500, "Query failed"));
+                return;
+            }
+
+            connection.templates = result.rows;
+            resolve(connection);
+        });
+    });
+}
+
+
 /* insertTemplate(connection, template)
  *  connection:
  *      A connection object created by the #connect function.

@@ -72,6 +72,22 @@ apiRoutes.get('/report/:id', function(request, result)
  */
 
 
+ /* "/templates"
+  *     GET: return an array of the available templates
+  */
+apiRoutes.get('/templates', function(request, result)
+{
+    api.getTemplates().then( (theTemplates) =>
+    {
+        result.status(200).json(theTemplates);
+    })
+    .catch( (theError) =>
+    {
+        result.status(theError.status).json(theError);
+    })
+});
+
+
 /*  "/image/:reportId/:templateId"
  *      POST: create an image for the given report and template id
  */

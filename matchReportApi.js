@@ -139,6 +139,23 @@ MatchReportApi.prototype.createReport = function(report)
 }
 
 
+MatchReportApi.prototype.getTemplates = function()
+{
+    var self = this;
+    return new Promise( function(resolve, reject)
+    {
+        MatchReportDb.connect(self.dbUrl)
+        .then( MatchReportDb.selectTemplates )
+        .then( (connection) =>
+        {
+            connection.done();
+            resolve(connection.templates);
+        })
+        .catch( (theError) => reject( MatchReportApiError.handle(theError)) );
+    });
+}
+
+
 MatchReportApi.prototype.getImage = function(imageId)
 {
     var self = this;
