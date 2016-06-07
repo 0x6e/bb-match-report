@@ -5,7 +5,9 @@ controllers.controller('RootCtrl', ['$scope',
         // ...
     }]);
 
-controllers.controller('ReportCreationController', ['$scope', '$location', 'MatchReport', function($scope, $location, MatchReport)
+controllers.controller('ReportCreationController'
+    , ['$scope', '$location', 'MatchReport'
+    , function($scope, $location, MatchReport)
 {
     $scope.report = new MatchReport({ home: { colour: '#ffffff' }, away: { colour: '#ffffff' }});
 
@@ -26,13 +28,26 @@ controllers.controller('ReportCreationController', ['$scope', '$location', 'Matc
 }]);
 
 
-controllers.controller('MatchReportPreviewController', ['$scope', '$routeParams', 'MatchReport', function($scope, $routeParams, MatchReport)
+controllers.controller('MatchReportPreviewController'
+    , ['$scope', '$routeParams', 'MatchReport', 'Templates'
+    , function($scope, $routeParams, MatchReport, Templates)
 {
     MatchReport.get({id: $routeParams.reportId})
     .$promise
     .then( (theReport) =>
     {
         $scope.report = theReport;
+    })
+    .catch( (error) =>
+    {
+        console.log(error)
+    });
+
+    Templates.query()
+    .$promise
+    .then( (theTemplates) =>
+    {
+        $scope.templates = theTemplates;
     })
     .catch( (error) =>
     {
