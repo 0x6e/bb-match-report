@@ -1,5 +1,10 @@
 <div class="row">
     <h2>Preview</h2>
-    {{report}}<br />
+    {{report}}
+    <hr />
     {{templates}}
+    <hr />
+    <div ng-if="report" ng-repeat="template in templates">
+        <match-report-svg svg="{{template.svg}}" report="{{report}}"></match-report-svg>
+    </div>
 </div>
