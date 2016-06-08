@@ -2,6 +2,8 @@ const MatchReportApiError = require('./matchReportApiError.js');
 const pg = require('pg');
 const util = require('util');
 
+// SSL is required on Heroku
+pg.defaults.ssl = true;
 
 /* connect(dbUrl)
  *  dbUrl:
