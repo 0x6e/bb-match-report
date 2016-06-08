@@ -13,6 +13,7 @@ app.use(bodyParser.json());
 
 // Route all other requests to the web app
 app.use(express.static(__dirname + "/public"));
+app.use('/image-builder', express.static(__dirname + "/image-builder"));
 
 // Connect to the API to check our database connection. Start the app if successful
 api.connect().then( () =>

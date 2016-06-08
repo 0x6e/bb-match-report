@@ -1,7 +1,8 @@
 var app = angular.module('app', [
     'ngRoute',
     'matchReportApi',
-    'matchReportControllers'
+    'matchReportControllers',
+    'imageBuilder'
 ]);
 
 app.config(['$routeProvider', function($routeProvider) {

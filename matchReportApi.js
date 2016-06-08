@@ -1,4 +1,4 @@
-const imageBuilder = require('./imageBuilder.js');
+const imageBuilder = require('./image-builder/imageBuilder.js');
 const MatchReportApiError = require('./matchReportApiError.js');
 const MatchReportDb = require('./matchReportDb.js');
 const pg = require('pg');
