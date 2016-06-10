@@ -154,6 +154,7 @@ module.exports.selectReport = function (connection, reportId)
             }
 
             var report = {};
+            report.id = result.rows[0].id;
             report.homeTeam = result.rows[0].home_team;
             report.homeScore = result.rows[0].home_score;
             report.awayTeam = result.rows[0].away_team;
