@@ -65,7 +65,11 @@ MatchReportApi.prototype.getReport = function(reportId)
         .then( (connection) =>
         {
             connection.done();
-            resolve(connection.report);
+
+            if (connection.report === undefined)
+                reject(new MatchReportApiError(404, util.format("Report id '%d' does not exist.", reportId)));
+            else
+                resolve(connection.report);
         })
         .catch( (theError) => reject( MatchReportApiError.handle(theError)) );
     });
@@ -155,7 +159,11 @@ MatchReportApi.prototype.getTemplate = function(templateId)
         .then( (connection) =>
         {
             connection.done();
-            resolve(connection.template);
+
+            if (connection.template === undefined)
+                reject(new MatchReportApiError(404, util.format("No template found with id: %d", templateId)));
+            else
+                resolve(connection.template);
         })
         .catch( (theError) => reject( MatchReportApiError.handle(theError)) );
     });
@@ -195,7 +203,11 @@ MatchReportApi.prototype.getImageById = function(imageId)
         .then( (connection) =>
         {
             connection.done();
-            resolve(connection.image);
+
+            if (connection.image === undefined)
+                reject(new MatchReportApiError(404, util.format("No image found with id: %d", imageId)));
+            else
+                resolve(connection.image);
         })
         .catch( (theError) => reject( MatchReportApiError.handle(theError)) );
     });
@@ -231,11 +243,24 @@ MatchReportApi.prototype.getImage = function(reportId, templateId)
             else
             {
                 return MatchReportDb.selectReport(connection, reportId)
-                .then( (connection) => MatchReportDb.selectTemplate(connection, templateId))
+                .then( (connection) => 
+                {
+                    if (connection.report === undefined)
+                        reject(new MatchReportApiError(404, util.format("Report id '%d' does not exist.", reportId)));
+                    else
+                        return MatchReportDb.selectTemplate(connection, templateId);
+                })
                 .then( (connection) =>
                 {
-                    connection.image = imageBuilder.build(connection.template.svg, connection.report);
-                    return MatchReportDb.insertImage(connection, reportId, templateId, connection.image);
+                    if (connection.template === undefined)
+                    {
+                        reject(new MatchReportApiError(404, util.format("No template found with id: %d", templateId)));
+                    }
+                    else
+                    {
+                        connection.image = imageBuilder.build(connection.template.svg, connection.report);
+                        return MatchReportDb.insertImage(connection, reportId, templateId, connection.image);
+                    }
                 })
                 .then( (connection) =>
                 {

@@ -128,7 +128,8 @@ module.exports.setup = function(connection)
  *
  *  returns:
  *      A Promise resolving a connection object which contains a
- *      'report' property storing the requested report.
+ *      'report' property storing the requested report. 'report' will
+ *      undefined if it does not exist.
  */
 module.exports.selectReport = function (connection, reportId)
 {
@@ -146,21 +147,22 @@ module.exports.selectReport = function (connection, reportId)
                 return;
             }
 
-            if (result.rows.length == 0)
+            if (result.rows.length === 0)
             {
-                connection.done();
-                reject(new MatchReportApiError(404, util.format("Report id '%d' does not exist.", reportId)));
-                return;
+                connection.report = undefined;
+            }
+            else
+            {
+                var report = {};
+                report.id = result.rows[0].id;
+                report.homeTeam = result.rows[0].home_team;
+                report.homeScore = result.rows[0].home_score;
+                report.awayTeam = result.rows[0].away_team;
+                report.awayScore = result.rows[0].away_score;
+
+                connection.report = report;
             }
 
-            var report = {};
-            report.id = result.rows[0].id;
-            report.homeTeam = result.rows[0].home_team;
-            report.homeScore = result.rows[0].home_score;
-            report.awayTeam = result.rows[0].away_team;
-            report.awayScore = result.rows[0].away_score;
-
-            connection.report = report;
             resolve(connection);
         });
     });
@@ -212,7 +214,8 @@ module.exports.insertReport = function (connection, report)
  *
  *  returns:
  *      A Promise resolving a connection object which contains a 'template'
- *      property storing the requested template.
+ *      property storing the requested template. 'template' is undefined if
+ *      the template could not be found.
  */
 module.exports.selectTemplate = function(connection, templateId)
 {
@@ -229,14 +232,11 @@ module.exports.selectTemplate = function(connection, templateId)
             }
 
             if (result.rows.length === 0)
-            {
-                reject(new MatchReportApiError(404, util.format("No template found with id: %d", templateId)));
-            }
+                connection.template = undefined;
             else
-            {
                 connection.template = result.rows[0];
-                resolve(connection);
-            }
+
+            resolve(connection);
         });
     });
 }
@@ -314,7 +314,8 @@ module.exports.insertTemplate = function(connection, templateName, template)
  *
  *  returns:
  *      A Promise resolving a connection object which contains an 'image' property
- *      storing the requested image.
+ *      storing the requested image. 'image' is undefined if the image could not
+ *      be found.
  */
 module.exports.selectImageById = function(connection, imageId)
 {
@@ -331,14 +332,11 @@ module.exports.selectImageById = function(connection, imageId)
             }
 
             if (result.rows.length === 0)
-            {
-                reject(new MatchReportApiError(404, util.format("No image found with id: %d", imageId)));
-            }
+                connection.image = undefined;
             else
-            {
                 connection.image = result.rows[0].svg;
-                resolve(connection);
-            }
+
+            resolve(connection);
         });
     });
 }
@@ -357,7 +355,8 @@ module.exports.selectImageById = function(connection, imageId)
  *
  *  returns:
  *      A Promise resolving a connection object which contains an 'image'
- *      property storing the selected image.
+ *      property storing the selected image. 'image' is undefined if the
+ *      image could not be found.
  */
 module.exports.selectImage = function(connection, reportId, templateId)
 {
