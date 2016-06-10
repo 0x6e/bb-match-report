@@ -246,7 +246,7 @@ MatchReportApi.prototype.getImage = function(reportId, templateId)
                 .then( (connection) => 
                 {
                     if (connection.report === undefined)
-                        reject(new MatchReportApiError(404, util.format("Report id '%d' does not exist.", reportId)));
+                        return Promise.reject(new MatchReportApiError(404, util.format("Report id '%d' does not exist.", reportId)));
                     else
                         return MatchReportDb.selectTemplate(connection, templateId);
                 })
@@ -254,7 +254,7 @@ MatchReportApi.prototype.getImage = function(reportId, templateId)
                 {
                     if (connection.template === undefined)
                     {
-                        reject(new MatchReportApiError(404, util.format("No template found with id: %d", templateId)));
+                        return Promise.reject(new MatchReportApiError(404, util.format("No template found with id: %d", templateId)));
                     }
                     else
                     {
