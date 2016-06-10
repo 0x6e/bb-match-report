@@ -1,10 +1,16 @@
 <div class="row">
     <h2>Preview</h2>
-    {{report}}
-    <hr />
-    {{templates}}
-    <hr />
-    <div ng-if="report" ng-repeat="template in templates">
-        <match-report-svg svg="{{template.svg}}" report="{{report}}"></match-report-svg>
+    <div class="col-xs-12">
+        <div ng-if="report" ng-repeat="template in templates">
+            <match-report-svg svg="{{template.svg}}" report="{{report}}"></match-report-svg>
+            <div class="input-group">
+                <span class="input-group-addon" id="direct-url-addon">Image URL</span>
+                <input type="text" class="form-control" id="direct-url" value="http://{{host}}/api/image/{{report.id}}/{{template.id}}" readonly>
+            </div>
+            <div class="input-group">
+                <span class="input-group-addon" id="forum-img-addon">Forum image</span>
+                <input type="text" class="form-control" id="forum-url" value="[img]http://{{host}}/api/image/{{report.id}}/{{template.id}}[/img]" readonly>
+            </div>
+        </div>
     </div>
 </div>

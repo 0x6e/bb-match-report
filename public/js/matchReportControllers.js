@@ -29,9 +29,20 @@ controllers.controller('ReportCreationController'
 
 
 controllers.controller('MatchReportPreviewController'
-    , ['$scope', '$routeParams', 'MatchReport', 'Templates'
-    , function($scope, $routeParams, MatchReport, Templates)
+    , ['$scope', '$location', '$routeParams', 'MatchReport', 'Templates'
+    , function($scope, $location, $routeParams, MatchReport, Templates)
 {
+    // Determine the host name for the image URLs
+    if ($location.port() === 80)
+    {
+        $scope.host = $location.host();
+    }
+    else
+    {
+        $scope.host = $location.host() + ':' + $location.port();
+    }
+
+    // Request the report
     MatchReport.get({id: $routeParams.reportId})
     .$promise
     .then( (theReport) =>
@@ -43,6 +54,7 @@ controllers.controller('MatchReportPreviewController'
         console.log(error)
     });
 
+    // Request the templates
     Templates.query()
     .$promise
     .then( (theTemplates) =>
