@@ -313,7 +313,7 @@ module.exports.insertTemplate = function(connection, templateName, template)
  *      The id of the image to return.
  *
  *  returns:
- *      A Promise resolving a connection object which contains an 'svg' property
+ *      A Promise resolving a connection object which contains an 'image' property
  *      storing the requested image.
  */
 module.exports.selectImageById = function(connection, imageId)
@@ -336,7 +336,7 @@ module.exports.selectImageById = function(connection, imageId)
             }
             else
             {
-                connection.svg = result.rows[0].svg;
+                connection.image = result.rows[0].svg;
                 resolve(connection);
             }
         });

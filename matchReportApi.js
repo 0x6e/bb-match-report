@@ -195,7 +195,7 @@ MatchReportApi.prototype.getImageById = function(imageId)
         .then( (connection) =>
         {
             connection.done();
-            resolve(connection.svg);
+            resolve(connection.image);
         })
         .catch( (theError) => reject( MatchReportApiError.handle(theError)) );
     });
