@@ -127,7 +127,7 @@ apiRoutes.post('/image/:reportId/:templateId', function(request, result)
  */
 apiRoutes.get('/image/:id/report.svg', function(request, result)
 {
-    api.getImage(request.params.id).then( (theImage) =>
+    api.getImageById(request.params.id).then( (theImage) =>
     {
         result.set('Content-Type', 'image/svg+xml');
         result.status(200).send(theImage);
@@ -138,6 +138,22 @@ apiRoutes.get('/image/:id/report.svg', function(request, result)
     })
 });
 
+
+/* "/image/:reportId/:templateId"
+ *      GET: find image by report and template ids
+ */
+apiRoutes.get('/image/:reportId/:templateId', function(request, result)
+{
+    api.getImage(request.params.reportId, request.params.templateId).then( (theImage) =>
+    {
+        result.set('Content-Type', 'image/svg+xml');
+        result.status(200).send(theImage);
+    })
+    .catch( (theError) =>
+    {
+        result.status(theError.status).json(theError);
+    })
+});
 
 
 app.use('/api', apiRoutes);

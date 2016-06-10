@@ -305,7 +305,7 @@ module.exports.insertTemplate = function(connection, templateName, template)
 }
 
 
-/* selectImage(connection, imageId)
+/* selectImageById(connection, imageId)
  *  connection:
  *      A connection object created by the #connect function.
  *
@@ -316,7 +316,7 @@ module.exports.insertTemplate = function(connection, templateName, template)
  *      A Promise resolving a connection object which contains an 'svg' property
  *      storing the requested image.
  */
-module.exports.selectImage = function(connection, imageId)
+module.exports.selectImageById = function(connection, imageId)
 {
     return new Promise( function (resolve, reject)
     {
@@ -339,6 +339,48 @@ module.exports.selectImage = function(connection, imageId)
                 connection.svg = result.rows[0].svg;
                 resolve(connection);
             }
+        });
+    });
+}
+
+
+
+/* selectImage(connection, reportId, templateId)
+ *  connection:
+ *      A connection object created by the #connect function.
+ *
+ *  reportId:
+ *      The id of the report used to create the image.
+ *
+ *  templateId:
+ *      The id of the template used to create the image.
+ *
+ *  returns:
+ *      A Promise resolving a connection object which contains an 'image'
+ *      property storing the selected image.
+ */
+module.exports.selectImage = function(connection, reportId, templateId)
+{
+    return new Promise( function (resolve, reject)
+    {
+        connection.client.query('SELECT svg FROM images WHERE report_id=$1 AND template_id=$2;'
+            , [reportId, templateId]
+            , function(error, result)
+        {
+            if (error)
+            {
+                console.log(error);
+                connection.done();
+                reject(new MatchReportApiError(500, "Query failed"));
+                return;
+            }
+
+            if (result.rows.length === 0)
+                connection.image = undefined;
+            else
+                connection.image = result.rows[0].svg;
+
+            resolve(connection);
         });
     });
 }
@@ -382,3 +424,4 @@ module.exports.insertImage = function(connection, reportId, templateId, image)
         });
     });
 }
+

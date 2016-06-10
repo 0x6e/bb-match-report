@@ -11,7 +11,6 @@
 
     ImageBuilder.prototype.build = function(template, matchReport)
     {
-        console.log(matchReport);
         var doc = this.parser.parseFromString(template, 'image/svg+xml');
 
         function updateInnerText(element, text)

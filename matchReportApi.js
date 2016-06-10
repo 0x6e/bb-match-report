@@ -179,7 +179,7 @@ MatchReportApi.prototype.getTemplates = function()
 }
 
 
-MatchReportApi.prototype.getImage = function(imageId)
+MatchReportApi.prototype.getImageById = function(imageId)
 {
     var self = this;
     return new Promise( function(resolve, reject)
@@ -191,13 +191,60 @@ MatchReportApi.prototype.getImage = function(imageId)
         }
 
         MatchReportDb.connect(self.dbUrl)
-        .then( (connection) => MatchReportDb.selectImage(connection, imageId))
+        .then( (connection) => MatchReportDb.selectImageById(connection, imageId))
         .then( (connection) =>
         {
             connection.done();
             resolve(connection.svg);
         })
         .catch( (theError) => reject( MatchReportApiError.handle(theError)) );
+    });
+}
+
+
+MatchReportApi.prototype.getImage = function(reportId, templateId)
+{
+    var self = this;
+    return new Promise( function(resolve, reject)
+    {
+        if (!isInt(reportId))
+        {
+            reject(new MatchReportApiError(400, "Invalid reportId"));
+            return;
+        }
+
+        if (!isInt(templateId))
+        {
+            reject(new MatchReportApiError(400, "Invalid templateId"));
+            return;
+        }
+
+        MatchReportDb.connect(self.dbUrl)
+        .then( (connection) => MatchReportDb.selectImage(connection, reportId, templateId))
+        .then( (connection) =>
+        {
+            if (connection.image !== undefined)
+            {
+                connection.done();
+                resolve(connection.image);
+            }
+            else
+            {
+                return MatchReportDb.selectReport(connection, reportId)
+                .then( (connection) => MatchReportDb.selectTemplate(connection, templateId))
+                .then( (connection) =>
+                {
+                    connection.image = imageBuilder.build(connection.template.svg, connection.report);
+                    return MatchReportDb.insertImage(connection, reportId, templateId, connection.image);
+                })
+                .then( (connection) =>
+                {
+                    resolve(connection.image);
+                })
+            }
+        })
+        .catch( (theError) => reject( MatchReportApiError.handle(theError)) );
+
     });
 }
 
